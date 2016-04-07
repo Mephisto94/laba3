@@ -27,11 +27,6 @@ TEST_CASE("Vector default ctor") {
         REQUIRE(v.size() == 0);
         REQUIRE(v.capacity() == 1);
     }
-    /* SECTION("*char") {
-         Vector<*char> v;
-         REQUIRE(v.size() == 0);
-         REQUIRE(v.capacity() == 1);
-     }*/
 }
 
 TEST_CASE("Vector explicit init ctor") {
