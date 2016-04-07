@@ -1,1 +1,1 @@
-# String
+# Dynamic type Array

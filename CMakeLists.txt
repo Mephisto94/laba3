@@ -15,8 +15,10 @@ include_directories(include)
 
 enable_testing()
 
-set(SOURCES src/string.cpp)
+add_executable(test_array tests/test_array.cpp)
 
-add_executable(test_string tests/test_string.cpp ${SOURCES})
+add_test(NAME ${PROJECT_NAME} COMMAND test_array)
 
-add_test(NAME ${PROJECT_NAME} COMMAND test_string)
+
+
+
