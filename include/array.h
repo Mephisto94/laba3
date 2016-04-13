@@ -73,54 +73,40 @@ private:
     value_type *data_;
     size_type size_;
     size_type capacity_;
-    static const unsigned int increment_ = 2;
+    static const unsigned int multiplicator_ = 2;
 
 };
 
 template<class T>
 T Vector<T>::invar = T();
 
+
 template<class T>
-Vector<T>::Vector() {
-    data_ = new value_type[1];
-    capacity_ = 1;
-    size_ = 0;
+Vector<T>::Vector() : data_(new value_type[1]), capacity_(1), size_(0) {
 }
 
 template<class T>
-Vector<T>::Vector(size_type count) {
-    data_ = new value_type[count * increment_];
-    capacity_ = count * increment_;
-    size_ = count;
+Vector<T>::Vector(size_type count) :  data_(new value_type[count*multiplicator_]), capacity_(count*multiplicator_), size_(count) {
 }
 
 template<class T>
-Vector<T>::Vector(size_type count, const value_type &value) {
-    data_ = new value_type[count * increment_];
-    capacity_ = count * increment_;
-    size_ = count;
+Vector<T>::Vector(size_type count, const value_type &value): data_(new value_type[count * multiplicator_]), capacity_(count), size_(count){
     for (size_type i = 0; i < count; i++) {
-        *(data_ + i) = value;
+        data_[i] = value;
     }
 }
 
 template<class T>
-Vector<T>::Vector(const Vector &other) {
-    size_ = other.size_;
-    capacity_ = other.capacity_;
-    data_ = new value_type[capacity_];
+Vector<T>::Vector(const Vector &other): data_(new value_type[other.capacity_]), capacity_(other.capacity_), size_(other.size_) {
     for (size_type i = 0; i < size_; i++) {
-        *(data_ + i) = *(other.data_ + i);
+        data_[i] = other.data_[i];
     }
 }
 
 template<class T>
-Vector<T>::Vector(Vector &&other) noexcept {
-    size_ = other.size_;
+Vector<T>::Vector(Vector &&other) noexcept : data_(other.data_), capacity_(other.capacity_), size_(other.size_){
     other.size_ = 0;
-    capacity_ = other.capacity_;
     other.capacity_ = 0;
-    data_ = other.data_;
     other.data_ = &Vector<T>::invar;
 }
 
@@ -135,14 +121,15 @@ template<class T>
 Vector<T> &Vector<T>::operator=(const Vector &other) {
     if (capacity_ >= other.size_) {
         for (size_type i = 0; i < other.size_; i++) {
-            *(data_ + i) = *(other.data_ + i);
+            data_[i] = other.data_[i];
         }
     } else {
+//        TODO: except issue
         delete[] data_;
-        data_ = new value_type[2 * other.size_];
-        capacity_ = 2 * other.size_;
+        data_ = new value_type[multiplicator_ * other.size_];
+        capacity_ = multiplicator_ * other.size_;
         for (size_type i = 0; i < other.size_; i++) {
-            *(data_ + i) = *(other.data_ + i);
+            data_[i] = other.data_[i];
         }
     }
     size_ = other.size_;
@@ -162,18 +149,12 @@ Vector<T> &Vector<T>::operator=(Vector &&other) noexcept {
 
 template<class T>
 T &Vector<T>::operator[](size_type pos) noexcept {
-    if (pos >= size_) {
-        throw std::out_of_range("index is out of range");
-    }
-    return *(data_ + pos);
+    return data_[pos];
 }
 
 template<class T>
 const T &Vector<T>::operator[](size_type pos) const noexcept {
-    if (pos >= size_) {
-        throw std::out_of_range("index is out of range");
-    }
-    return *(data_ + pos);
+    return data_[pos];
 }
 
 template<class T>
@@ -181,7 +162,7 @@ T &Vector<T>::at(size_type pos) {
     if (pos >= size_) {
         throw std::out_of_range("index is out of range");
     }
-    value_type *pt = data_ + pos;
+    value_type *pt = &data_[pos];
     return *(pt);
 }
 
@@ -190,28 +171,28 @@ const T &Vector<T>::at(size_type pos) const {
     if (pos >= size_) {
         throw std::out_of_range("index is out of range");
     }
-    value_type *pt = data_ + pos;
+    value_type *pt = &data_[pos];
     return *(pt);
 }
 
 template<class T>
 T &Vector<T>::front() noexcept {
-    return *data_;
+    return data_[0];
 }
 
 template<class T>
 const T &Vector<T>::front() const noexcept {
-    return *data_;
+    return data_[0];
 }
 
 template<class T>
 T &Vector<T>::back() noexcept {
-    return *(data_ + size_ - 1);
+    return data_[size_ - 1];
 }
 
 template<class T>
 const T &Vector<T>::back() const noexcept {
-    return *(data_ + size_ - 1);
+    return data_[size_ - 1];
 }
 
 template<class T>
